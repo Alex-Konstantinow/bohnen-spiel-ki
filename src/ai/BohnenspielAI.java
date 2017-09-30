@@ -8,6 +8,7 @@ public class BohnenspielAI {
     private final static int NUMBER_OF_CELLS = 12;
 
     private BeanCell[] cells = new BeanCell[12];
+    private GameState gameState;
 
 	Random rand = new Random();
 
@@ -19,6 +20,8 @@ public class BohnenspielAI {
 	        cells[i].setNextCell(cells[(i + 1) % 12]);
 	        cells[i].setPreviousCell(cells[(i + 11) % 12]);
         }
+        gameState = new GameState(cells);
+
     }
 	
 	/**
@@ -35,27 +38,21 @@ public class BohnenspielAI {
 		}
 		// enemy acted and i have to react
 		else if (enemyIndex > 0 && enemyIndex <= 6) {
-		    changeCurrentGamestate(enemyIndex);
+		    gameState.changeCurrentGamestate(enemyIndex);
 		    //TODO: method to decide next AI-turn is called here
 			index = rand.nextInt(6) + 7;
 		}
 		else if (enemyIndex > 6 && enemyIndex <= 12) {
-		    changeCurrentGamestate(enemyIndex);
+		    gameState.changeCurrentGamestate(enemyIndex);
             //TODO: method to decide next AI-turn is called here
 			index = rand.nextInt(6) + 1;
 		}
 		return index;
 	}
 
-    /**
-     * Changing the game state after the enemys move.
-     * @param enemyIndex is the index of the chosen cell the enemy emptied
-     */
-	private void changeCurrentGamestate(int enemyIndex) {
-	    int chosenIndex = --enemyIndex;
-	    int numberOfBeans = cells[chosenIndex].getBeans();
-	    cells[chosenIndex].emptyCell();
-	    cells[chosenIndex].distributeBeans(numberOfBeans);
+	// TODO: This Method should be used to generate the index for my next turn
+	private void generateTree(){
+	    new GameTree(gameState);
     }
 
     /**
