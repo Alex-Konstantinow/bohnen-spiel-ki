@@ -26,10 +26,10 @@ public class GameState {
 
     /**
      * Changing the game state after the enemys move and builds the new game tree.
-     * @param enemyIndex is the index of the chosen cell the enemy emptied
+     * @param cellIndex is the index of the chosen cell the enemy emptied
      */
-    public void changeCurrentGamestate(int enemyIndex) {
-        int chosenIndex = --enemyIndex;
+    public void changeCurrentGamestate(int cellIndex) {
+        int chosenIndex = --cellIndex;
         int numberOfBeans = cells[chosenIndex].getBeans();
         cells[chosenIndex].emptyCell();
         //cells[chosenIndex].distributeBeans(numberOfBeans);

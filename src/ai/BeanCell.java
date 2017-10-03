@@ -45,7 +45,7 @@ public class BeanCell {
         int currentBeans = this.getBeans();
         if(currentBeans == 6 || currentBeans == 4 || currentBeans == 2) {
             this.emptyCell();
-            previousCell.collectBeans();
+            //previousCell.collectBeans();
         }
     }
 
