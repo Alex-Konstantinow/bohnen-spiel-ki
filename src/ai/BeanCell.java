@@ -22,7 +22,7 @@ public class BeanCell {
      */
     public void distributeBeans(int beansLeft) {
         int beansToDistribute = --beansLeft;
-        if(beansLeft > 1) {
+        if(beansToDistribute > 1) {
             nextCell.increaseBeans();
             nextCell.distributeBeans(beansToDistribute);
         } else {
@@ -32,7 +32,7 @@ public class BeanCell {
         }
     }
 
-    private void increaseBeans(){
+    public void increaseBeans(){
         this.beans++;
     }
 
@@ -41,7 +41,7 @@ public class BeanCell {
      * cell until a cell does not contain 6, 4 or 2 beans.
      * TODO: possible to implement memory of the current points collected by each player
      */
-    private void collectBeans() {
+    public void collectBeans() {
         int currentBeans = this.getBeans();
         if(currentBeans == 6 || currentBeans == 4 || currentBeans == 2) {
             this.emptyCell();
@@ -63,6 +63,10 @@ public class BeanCell {
 
     public int getBeans() {
         return beans;
+    }
+
+    public void setBeans(int beans) {
+        this.beans = beans;
     }
 
     public BeanCell getNextCell() {

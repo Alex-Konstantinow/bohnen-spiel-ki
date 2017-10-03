@@ -10,13 +10,18 @@ public class GameState {
     private int heuristic;
     private int depthInTree;
 
+    private boolean startPlayer = false; //true if this AI is the start player of the game
+
     public GameState(BeanCell[] gamestate){
         for(int i = 0; i < gamestate.length; i++){
             cells[i] = new BeanCell(gamestate[i].getIndex(), gamestate[i].getBeans());
-            cells[i].setNextCell(gamestate[i].getNextCell());
-            cells[i].setPreviousCell(gamestate[i].getPreviousCell());
         }
-        this.heuristic = calculateHeuristic();
+
+        for(int i = 0; i < gamestate.length; i++) {
+            cells[i].setNextCell(cells[(i+1) % 12]);
+            cells[i].setPreviousCell(cells[(i+11) % 12]);
+        }
+        //this.heuristic = calculateHeuristic();
     }
 
     /**
@@ -27,7 +32,25 @@ public class GameState {
         int chosenIndex = --enemyIndex;
         int numberOfBeans = cells[chosenIndex].getBeans();
         cells[chosenIndex].emptyCell();
-        cells[chosenIndex].distributeBeans(numberOfBeans);
+        //cells[chosenIndex].distributeBeans(numberOfBeans);
+        this.distributeBeansOverCurrentGameState(chosenIndex, numberOfBeans);
+    }
+
+    private void distributeBeansOverCurrentGameState(int index, int beansToDistribute) {
+        for(int i = 1; i <= beansToDistribute; i++) {
+            cells[(index + i) % 12].increaseBeans();
+        }
+        if(cells[(index + beansToDistribute) % 12].getBeans() == 2
+                || cells[(index + beansToDistribute) % 12].getBeans() == 4
+                    || cells[(index + beansToDistribute) % 12].getBeans() == 6) {
+            while((cells[(index + beansToDistribute) % 12].getBeans() == 2
+                    || cells[(index + beansToDistribute) % 12].getBeans() == 4
+                    || cells[(index + beansToDistribute) % 12].getBeans() == 6)
+                        && beansToDistribute > 0) {
+                cells[(index + beansToDistribute) % 12].collectBeans();
+                beansToDistribute--;
+            }
+        }
     }
 
     public BeanCell[] getCells() {
@@ -39,7 +62,7 @@ public class GameState {
     }
 
     public int getHeuristic() {
-        return heuristic;
+        return this.calculateHeuristic();
     }
 
     public void setHeuristic(int heuristic) {
@@ -54,12 +77,130 @@ public class GameState {
         this.depthInTree = depthInTree;
     }
 
+    public boolean getStartPlayer() {
+        return startPlayer;
+    }
+
+    public void setStartPlayer(boolean startPlayer) {
+        this.startPlayer = startPlayer;
+    }
+
     /**
      * TODO: Implement the heuristic calculation.
      * @return calculated heuristic for the game state
      */
     private int calculateHeuristic(){
         int calculatedHeuristic = 0;
+        calculatedHeuristic = amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells();
         return calculatedHeuristic;
+    }
+
+    /**
+     * TODO: Comparison of the value of own treasury and the one of the enemy.
+     * TODO: Needs implementation of the memory of the treasury first.
+     *
+     * @return difference between own treasury and the one of the enemy (negative value if own player is losing)
+     */
+    private int compareTreasury() {
+        int difference = 0;
+        return difference;
+    }
+
+    /**
+     * Counts the amount of possible turns for the player. Amount is calculated by counting all non-empty beancells.
+     *
+     * @return amount of possible turns
+     */
+    private int amountPossibleTurns() {
+        int possibleTurns = 0;
+        if(startPlayer) {
+            for(int i = 0; i<6; i++) {
+                if(cells[i].getBeans() > 0) {
+                    possibleTurns++;
+                }
+            }
+        }
+        else {
+            for(int i = 6; i<12; i++) {
+                if(cells[i].getBeans() > 0) {
+                    possibleTurns++;
+                }
+            }
+        }
+        return possibleTurns;
+    }
+
+    /**
+     * Counting all own cells with an amount of 1, 3 or 5 beans if they can be reached by the enemy in a turn.
+     * A cell with 5 is worse than one with 3 which is worse than one with 1 bean.
+     * The less the better.
+     *
+     * @return amount of cells that lead to points for the enemy
+     */
+    private int amountCellsLeadToEnemyPoints() {
+        int amountCellsLeadToEnemyPoints = 0;
+        if(startPlayer) {
+            for(int i = 6; i<12; i++) {
+                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
+                            || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
+                    amountCellsLeadToEnemyPoints += (cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
+                }
+            }
+        }
+        else {
+            for(int i = 0; i<6; i++) {
+                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
+                    amountCellsLeadToEnemyPoints += (cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
+                }
+            }
+        }
+        return amountCellsLeadToEnemyPoints;
+    }
+
+    /**
+     * TODO: Counting all beans that are transferred into an enemy cell in a turn. The less the better.
+     *
+     * @return the amount of beans which are transferred into an enemy cell in a turn
+     */
+    private int amountBeansInEnemyField() {
+        int amountBeansInEnemyField = 0;
+        return amountBeansInEnemyField;
+    }
+
+    /**
+     * Counts the amount of cells with 6 or more beans. The more beans the better.
+     * TODO: Implementation of counting the cells with a high amount of beans if they can lead to a chain of "point-giving" cells
+     *
+     * @return the total amount of beans in cells with 6 or more beans
+     */
+    private int valuableCells() {
+        int valuableCells = 0;
+        if(startPlayer) {
+            for(int i = 0; i<6; i++) {
+                if(cells[i].getBeans() >= 6) {
+                    valuableCells += cells[i].getBeans();
+                }
+            }
+        }
+        else {
+            for(int i = 6; i<12; i++) {
+                if(cells[i].getBeans() >= 6) {
+                    valuableCells += cells[i].getBeans();
+                }
+            }
+        }
+        return valuableCells;
+    }
+
+    /**
+     * TODO: Valuation of the distribution of the cells. Ideal distribution epending on the strategy (equally or mainly in first two fields)
+     *
+     * @return
+     */
+    private int distributionOfBeans() {
+        return 0;
     }
 }
