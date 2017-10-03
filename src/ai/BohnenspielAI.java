@@ -47,14 +47,18 @@ public class BohnenspielAI {
                     System.out.print(gameState.getCells()[i].getBeans() + ", ");
                 }
             }
-			index = rand.nextInt(6) + 1;
+            do {
+                index = rand.nextInt(6) + 1;
+            } while(cells[index].getBeans() == 0);
 			gameState.changeCurrentGamestate(index);
 		}
 		// enemy acted and i have to react
 		else if (enemyIndex > 0 && enemyIndex <= 6) {
 		    gameState.changeCurrentGamestate(enemyIndex);
 		    //TODO: method to decide next AI-turn is called here
-			index = rand.nextInt(6) + 7;
+            do {
+                index = rand.nextInt(6) + 7;
+            } while(cells[index].getBeans() == 0);
 			gameState.changeCurrentGamestate(index);
             System.out.println("Index: " + index);
             for(int i = 0; i<12; i++) {
@@ -70,7 +74,9 @@ public class BohnenspielAI {
 		else if (enemyIndex > 6 && enemyIndex <= 12) {
 		    gameState.changeCurrentGamestate(enemyIndex);
             //TODO: method to decide next AI-turn is called here2
-			index = rand.nextInt(6) + 1;
+            do {
+                index = rand.nextInt(6) + 1;
+            } while(cells[index].getBeans() == 0);
             gameState.changeCurrentGamestate(index);
             System.out.println("Index: " + index);
             for(int i = 0; i<12; i++) {
