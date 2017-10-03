@@ -56,12 +56,14 @@ public class BohnenspielAI {
 		else if (enemyIndex > 0 && enemyIndex <= 6) {
 		    gameState.changeCurrentGamestate(enemyIndex);
 		    //TODO: method to decide next AI-turn is called here
-            do {
-                index = rand.nextInt(6) + 7;
-            } while(cells[index].getBeans() == 0);
+//            do {
+//                index = rand.nextInt(6) + 7;
+//            } while(cells[index].getBeans() == 0);
+            index = new GameTree(gameState, false).gameMove;
 			gameState.changeCurrentGamestate(index);
+
             System.out.println("Index: " + index);
-            for(int i = 0; i<12; i++) {
+            for(int i = 0; i < 12; i++) {
                 if (i == 11) {
                     System.out.println(gameState.getCells()[i].getBeans());
                 }
@@ -74,12 +76,13 @@ public class BohnenspielAI {
 		else if (enemyIndex > 6 && enemyIndex <= 12) {
 		    gameState.changeCurrentGamestate(enemyIndex);
             //TODO: method to decide next AI-turn is called here2
-            do {
-                index = rand.nextInt(6) + 1;
-            } while(cells[index].getBeans() == 0);
+//            do {
+//                index = rand.nextInt(6) + 1;
+//            } while(cells[index].getBeans() == 0);
+            index = new GameTree(gameState, false).gameMove;
             gameState.changeCurrentGamestate(index);
             System.out.println("Index: " + index);
-            for(int i = 0; i<12; i++) {
+            for(int i = 0; i < 12; i++) {
                 if (i == 11) {
                     System.out.println(gameState.getCells()[i].getBeans());
                 }

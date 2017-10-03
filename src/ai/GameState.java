@@ -11,7 +11,7 @@ public class GameState {
     private int depthInTree;
 
     private boolean startPlayer = false; //true if this AI is the start player of the game
-
+//    private int currentPlayerNumber = 0;
     public GameState(BeanCell[] gamestate){
         for(int i = 0; i < gamestate.length; i++){
             cells[i] = new BeanCell(gamestate[i].getIndex(), gamestate[i].getBeans());
@@ -111,7 +111,7 @@ public class GameState {
      *
      * @return amount of possible turns
      */
-    private int amountPossibleTurns() {
+    public int amountPossibleTurns() {
         int possibleTurns = 0;
         if(startPlayer) {
             for(int i = 0; i<6; i++) {
