@@ -10,7 +10,7 @@ import util.Settings;
 /** Au�er dem Attribut ai_name darf an dieser Klasse nichts ver�ndert werden. */
 public class GameClient {
 
-	private static String ai_name = "Enter your name here!";
+	private static String ai_name = "Test-KI";
 	private String gameID;
 	private BohnenspielAI ai;
 
