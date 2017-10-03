@@ -59,26 +59,29 @@ public class GameTree {
      * @param flag This variable was just added because I don't want to call the other constructor.
      */
     public GameTree(GameState currentState, boolean flag){
-        gameMove = max(TREE_DEPTH, currentState);
+        max(TREE_DEPTH, currentState, -1000, 1000);
     }
 
-    private int max(int depth, GameState currentState){
-        if(depth==0 || currentState.amountPossibleTurns() == 0){
+    private int max(int depth, GameState currentState, int alpha, int beta){
+        if(depth == 0 || currentState.amountPossibleTurns() == 0){
             return currentState.getHeuristic();
         }
-        int maxWert = -1000;
+        int maxWert = alpha;
         int j, buffer;
         j = jMaker(currentState);
         buffer = j + 6;
         while(j < buffer){
             if(currentState.getCells()[j].getBeans() != 0){
                 GameState expandedState = new GameState(currentState.getCells());
-                expandedState.changeCurrentGamestate(j);
+                expandedState.changeCurrentGamestate(j+1);
                 expandedState.setStartPlayer(!currentState.getStartPlayer());
 
-                int wert = min(--depth, expandedState);
+                int wert = min(depth-1, expandedState, maxWert, beta);
                 if(wert > maxWert){
                     maxWert = wert;
+                    if(maxWert >= beta){
+                        break;
+                    }
                     if(depth == TREE_DEPTH){
                         gameMove = j;
                     }
@@ -89,22 +92,25 @@ public class GameTree {
         return maxWert;
     }
 
-    private int min(int depth, GameState currentState){
-        if(depth==0 || currentState.amountPossibleTurns() == 0){
+    private int min(int depth, GameState currentState, int alpha, int beta){
+        if(depth == 0 || currentState.amountPossibleTurns() == 0){
             return currentState.getHeuristic();
         }
-        int minWert = 1000;
+        int minWert = beta;
         int j, buffer;
         j = jMaker(currentState);
         buffer = j + 6;
         while(j < buffer){
             if(currentState.getCells()[j].getBeans() != 0){
                 GameState expandedState = new GameState(currentState.getCells());
-                expandedState.changeCurrentGamestate(j);
+                expandedState.changeCurrentGamestate(j+1);
                 expandedState.setStartPlayer(!currentState.getStartPlayer());
-                int wert = max(--depth, expandedState);
+                int wert = max(depth-1, expandedState, alpha, minWert);
                 if(wert < minWert){
                     minWert = wert;
+                    if(minWert <= alpha){
+                        break;
+                    }
                 }
             }
             j++;
@@ -115,9 +121,9 @@ public class GameTree {
     private int jMaker(GameState currentState){
         int j;
         if(currentState.getStartPlayer()){
-            j = 1;
+            j = 0;
         } else {
-            j = 7;
+            j = 6;
         }
         return j;
     }

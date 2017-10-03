@@ -53,13 +53,14 @@ public class BohnenspielAI {
 			gameState.changeCurrentGamestate(index);
 		}
 		// enemy acted and i have to react
-		else if (enemyIndex > 0 && enemyIndex <= 6) {
+		else if (enemyIndex > 0 && enemyIndex <= 6 && startPlayer == false) {
 		    gameState.changeCurrentGamestate(enemyIndex);
-		    //TODO: method to decide next AI-turn is called here
+		    //TODO: method to decide next AI-turn is called here, we have to improve.
 //            do {
 //                index = rand.nextInt(6) + 7;
 //            } while(cells[index].getBeans() == 0);
-            index = new GameTree(gameState, false).gameMove;
+            GameTree gt = new GameTree(gameState,false);
+            index = gt.gameMove + 1;
 			gameState.changeCurrentGamestate(index);
 
             System.out.println("Index: " + index);
@@ -73,13 +74,14 @@ public class BohnenspielAI {
             }
 			System.out.println("Heuristik: " + gameState.getHeuristic());
 		}
-		else if (enemyIndex > 6 && enemyIndex <= 12) {
+		else if (enemyIndex > 6 && enemyIndex <= 12 && startPlayer) {
 		    gameState.changeCurrentGamestate(enemyIndex);
-            //TODO: method to decide next AI-turn is called here2
+            //TODO: method to decide next AI-turn is called here2, we still have to improve.
 //            do {
 //                index = rand.nextInt(6) + 1;
 //            } while(cells[index].getBeans() == 0);
-            index = new GameTree(gameState, false).gameMove;
+            GameTree gt = new GameTree(gameState,false);
+            index = gt.gameMove + 1;
             gameState.changeCurrentGamestate(index);
             System.out.println("Index: " + index);
             for(int i = 0; i < 12; i++) {
@@ -97,7 +99,7 @@ public class BohnenspielAI {
 
 	// TODO: This Method should be used to generate the index for my next turn
 	private void generateTree(){
-	    new GameTree(gameState);
+	    new GameTree(gameState, false);
     }
 
     /**
