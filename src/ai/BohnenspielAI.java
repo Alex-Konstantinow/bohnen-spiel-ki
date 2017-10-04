@@ -8,7 +8,7 @@ public class BohnenspielAI {
     private final static int NUMBER_OF_CELLS = 12;
 
     private boolean startPlayer = false; //true if this AI is the start player of the game
-
+    private final boolean playerOne = true, playerTwo = false;
     private BeanCell[] cells = new BeanCell[12];
     private GameState gameState;
 
@@ -36,7 +36,6 @@ public class BohnenspielAI {
 		int index = 0;
 		// have to choose the first move
 		if (enemyIndex == -1) {
-            //TODO: method to decide next AI-turn is called here
             startPlayer = !startPlayer;
             gameState.setStartPlayer(startPlayer);
             for(int i = 0; i<12; i++) {
@@ -47,19 +46,31 @@ public class BohnenspielAI {
                     System.out.print(gameState.getCells()[i].getBeans() + ", ");
                 }
             }
-            do {
-                index = rand.nextInt(6) + 1;
-            } while(cells[index].getBeans() == 0);
-			gameState.changeCurrentGamestate(index);
+//            do {
+//                index = rand.nextInt(6) + 1;
+//            } while(cells[index].getBeans() == 0);
+//			  gameState.changeCurrentGamestate(index);
+            //Achtung!!!!! I set currentPlayer first! playerOne = true, playerTwo = false
+            //This is needed because I count the player points, so I need to track which player's turn it is.
+            gameState.setCurrentPlayer(playerOne);
+            GameTree gt = new GameTree(gameState, playerOne);
+            index = gt.gameMove + 1;
+            gameState.changeCurrentGamestate(index);
 		}
 		// enemy acted and i have to react
-		else if (enemyIndex > 0 && enemyIndex <= 6 && startPlayer == false) {
+		else if (enemyIndex > 0 && enemyIndex <= 6) {
+		    gameState.setCurrentPlayer(playerOne);
 		    gameState.changeCurrentGamestate(enemyIndex);
 		    //TODO: method to decide next AI-turn is called here, we have to improve.
+            System.out.println("Player 1: " + gameState.getPlayerOnePoints());
+            System.out.println("Player 2: " + gameState.getPlayerTwoPoints());
 //            do {
 //                index = rand.nextInt(6) + 7;
 //            } while(cells[index].getBeans() == 0);
-            GameTree gt = new GameTree(gameState,false);
+            //Achtung!!!!! I set currentPlayer first! playerOne = true, playerTwo = false
+            //This is needed because I count the player points, so I need to track which player's turn it is.
+            gameState.setCurrentPlayer(playerTwo);
+            GameTree gt = new GameTree(gameState, playerTwo);
             index = gt.gameMove + 1;
 			gameState.changeCurrentGamestate(index);
 
@@ -74,13 +85,17 @@ public class BohnenspielAI {
             }
 			System.out.println("Heuristik: " + gameState.getHeuristic());
 		}
-		else if (enemyIndex > 6 && enemyIndex <= 12 && startPlayer) {
+		else if (enemyIndex > 6 && enemyIndex <= 12) {
+            gameState.setCurrentPlayer(playerTwo);
 		    gameState.changeCurrentGamestate(enemyIndex);
             //TODO: method to decide next AI-turn is called here2, we still have to improve.
+            System.out.println("Player 1: " + gameState.getPlayerOnePoints());
+            System.out.println("Player 2: " + gameState.getPlayerTwoPoints());
 //            do {
 //                index = rand.nextInt(6) + 1;
 //            } while(cells[index].getBeans() == 0);
-            GameTree gt = new GameTree(gameState,false);
+            gameState.setCurrentPlayer(playerOne);
+            GameTree gt = new GameTree(gameState, playerOne);
             index = gt.gameMove + 1;
             gameState.changeCurrentGamestate(index);
             System.out.println("Index: " + index);

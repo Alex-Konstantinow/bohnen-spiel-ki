@@ -41,11 +41,15 @@ public class BeanCell {
      * cell until a cell does not contain 6, 4 or 2 beans.
      * TODO: possible to implement memory of the current points collected by each player
      */
-    public void collectBeans() {
+    public int collectBeans() {
         int currentBeans = this.getBeans();
         if(currentBeans == 6 || currentBeans == 4 || currentBeans == 2) {
+            int buffer = this.beans;
             this.emptyCell();
+            return buffer;
             //previousCell.collectBeans();
+        } else {
+            return 0;
         }
     }
 
