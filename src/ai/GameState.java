@@ -10,8 +10,11 @@ public class GameState {
     private int heuristic;
     private int depthInTree;
 
+    private int playerOnePoints;
+    private int playerTwoPoints;
+    private boolean currentPlayer = false;
     private boolean startPlayer = false; //true if this AI is the start player of the game
-
+//    private int currentPlayerNumber = 0;
     public GameState(BeanCell[] gamestate){
         for(int i = 0; i < gamestate.length; i++){
             cells[i] = new BeanCell(gamestate[i].getIndex(), gamestate[i].getBeans());
@@ -21,6 +24,8 @@ public class GameState {
             cells[i].setNextCell(cells[(i+1) % 12]);
             cells[i].setPreviousCell(cells[(i+11) % 12]);
         }
+        playerOnePoints = 0;
+        playerTwoPoints = 0;
         //this.heuristic = calculateHeuristic();
     }
 
@@ -47,7 +52,12 @@ public class GameState {
                     || cells[(index + beansToDistribute) % 12].getBeans() == 4
                     || cells[(index + beansToDistribute) % 12].getBeans() == 6)
                         && beansToDistribute > 0) {
-                cells[(index + beansToDistribute) % 12].collectBeans();
+                if(this.currentPlayer){
+                    this.playerOnePoints += cells[(index + beansToDistribute) % 12].collectBeans();
+                } else {
+                    this.playerTwoPoints += cells[(index + beansToDistribute) % 12].collectBeans();
+                }
+//                cells[(index + beansToDistribute) % 12].collectBeans();
                 beansToDistribute--;
             }
         }
@@ -91,7 +101,7 @@ public class GameState {
      */
     private int calculateHeuristic(){
         int calculatedHeuristic = 0;
-        calculatedHeuristic = amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells();
+//        calculatedHeuristic = amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells();
         return calculatedHeuristic;
     }
 
@@ -111,7 +121,7 @@ public class GameState {
      *
      * @return amount of possible turns
      */
-    private int amountPossibleTurns() {
+    public int amountPossibleTurns() {
         int possibleTurns = 0;
         if(startPlayer) {
             for(int i = 0; i<6; i++) {
@@ -160,6 +170,12 @@ public class GameState {
         return amountCellsLeadToEnemyPoints;
     }
 
+    public int alternateHeuristic(){
+        int value = -1;
+
+        return value;
+    }
+
     /**
      * TODO: Counting all beans that are transferred into an enemy cell in a turn. The less the better.
      *
@@ -202,5 +218,21 @@ public class GameState {
      */
     private int distributionOfBeans() {
         return 0;
+    }
+
+    public int getPlayerOnePoints() {
+        return playerOnePoints;
+    }
+
+    public int getPlayerTwoPoints() {
+        return playerTwoPoints;
+    }
+
+    public boolean isCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public void setCurrentPlayer(boolean currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 }
