@@ -14,7 +14,7 @@ public class GameState {
     private int playerTwoPoints;
     private boolean currentPlayer = false;
     private boolean startPlayer = false; //true if this AI is the start player of the game
-//    private int currentPlayerNumber = 0;
+
     public GameState(BeanCell[] gamestate){
         for(int i = 0; i < gamestate.length; i++){
             cells[i] = new BeanCell(gamestate[i].getIndex(), gamestate[i].getBeans());
@@ -26,7 +26,7 @@ public class GameState {
         }
         playerOnePoints = 0;
         playerTwoPoints = 0;
-        //this.heuristic = calculateHeuristic();
+        this.heuristic = calculateHeuristic();
     }
 
     /**
@@ -100,9 +100,7 @@ public class GameState {
      * @return calculated heuristic for the game state
      */
     private int calculateHeuristic(){
-        int calculatedHeuristic = 0;
-//        calculatedHeuristic = amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells();
-        return calculatedHeuristic;
+        return amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells();
     }
 
     /**
