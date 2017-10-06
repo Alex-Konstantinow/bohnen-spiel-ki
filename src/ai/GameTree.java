@@ -8,8 +8,6 @@ public class GameTree {
     private final static int TREE_DEPTH = 8;
 
     private int gameMove;
-    private int currentBestMove;
-    private int currentBestHeuristic;
     private boolean firstPlayer;
 
     /**
@@ -32,8 +30,7 @@ public class GameTree {
      */
     public GameTree(GameState currentState, boolean firstPlayer) {
         this.firstPlayer = firstPlayer;
-        this.currentBestHeuristic  = -1000;
-        max(TREE_DEPTH, currentState, -1000, 1000);
+        max(TREE_DEPTH, currentState, -100000000, 100000000);
     }
 
     /**
@@ -53,19 +50,13 @@ public class GameTree {
     private int max(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
             //TODO: Insert a good heuristic for the currentState here.
-//            return evaluatePath(currentState);
-//            return currentState.getHeuristic();
-            if(currentState.getStartPlayer()){
-                return currentState.getPlayerOnePoints();
-            } else{
-                return currentState.getPlayerTwoPoints();
-            }
+            return currentState.getHeuristic();
         }
         int maxWert = alpha;
 
         //TODO: Maybe we need a better check for the field side.
         int nextIndex = setNextIndex(currentState);
-        int lastIndex = nextIndex + 6;
+        int lastIndex = setNextIndex(currentState) + 6;
         //go through all branches here.
         while (nextIndex < lastIndex) {
             if (currentState.getCells()[nextIndex].getBeans() != 0) {
@@ -78,6 +69,7 @@ public class GameTree {
                     }
                     if (depth == TREE_DEPTH) {
                         gameMove = nextIndex;
+                        System.out.println("Von Index " + nextIndex + " expandiert. => " + gameMove);
                     }
                 }
             }
@@ -99,19 +91,13 @@ public class GameTree {
     private int min(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
             //TODO: Insert a good heuristic for the currentState here.
-//            return currentState.getHeuristic();
-//            return evaluatePath(currentState);
-            if(currentState.getStartPlayer()){
-                return currentState.getPlayerOnePoints();
-            } else{
-                return currentState.getPlayerTwoPoints();
-            }
+            return currentState.getHeuristic();
         }
         int minWert = beta;
 
         //TODO: Maybe we need a better check for the field side.
         int  nextIndex = setNextIndex(currentState);
-        int  lastIndex = nextIndex + 6;
+        int  lastIndex = setNextIndex(currentState) + 6;
         while (nextIndex < lastIndex) {
             if (currentState.getCells()[nextIndex].getBeans() != 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
@@ -163,16 +149,8 @@ public class GameTree {
         return worstTurn;
     }
 
-    private int evaluatePath(GameState currentState) {
-        if(currentBestHeuristic < currentState.getHeuristic()) {
-            currentBestHeuristic = currentState.getHeuristic();
-            currentBestMove = gameMove;
-        }
-        return currentBestHeuristic;
-    }
-
     public int getGameMove() {
-        return currentBestMove;
+        return gameMove;
     }
     /*
 I think that my implementation of alpha/beta pruning is somewhat right.

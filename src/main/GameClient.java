@@ -113,7 +113,6 @@ public class GameClient {
 
 	private void move(int fieldID) throws Exception {
 		String url = Settings.SERVER_ADDRESS + "/api/move/" + this.gameID + "/" + ai_name + "/" + fieldID;
-		System.out.println(fieldID);
 		System.out.print(load(url));
 	}
 
