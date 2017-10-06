@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class GameTree {
 
     // Has to be > 4, but must perform < 3s
-    private final static int TREE_DEPTH = 8;
+    private final static int TREE_DEPTH = 6;
 
     private int gameMove;
     private boolean firstPlayer;

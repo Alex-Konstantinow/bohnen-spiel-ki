@@ -59,7 +59,7 @@ public class BohnenspielAI {
         index = choseIndex(aiIsPlayerOne);
         System.out.println("Index: " + index);
         printCells();
-+        return index;
+        return index;
     }
 
     private int choseIndex(boolean aiIsPlayerOne) {
