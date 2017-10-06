@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class GameTree {
 
     // Has to be > 4, but must perform < 3s
-    private final static int TREE_DEPTH = 16;
+    private final static int TREE_DEPTH = 8;
 
     private int gameMove;
     private int currentBestMove;
@@ -53,7 +53,13 @@ public class GameTree {
     private int max(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
             //TODO: Insert a good heuristic for the currentState here.
-            return evaluatePath(currentState);
+//            return evaluatePath(currentState);
+//            return currentState.getHeuristic();
+            if(currentState.getStartPlayer()){
+                return currentState.getPlayerOnePoints();
+            } else{
+                return currentState.getPlayerTwoPoints();
+            }
         }
         int maxWert = alpha;
 
@@ -93,7 +99,13 @@ public class GameTree {
     private int min(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
             //TODO: Insert a good heuristic for the currentState here.
-            return currentState.getHeuristic();
+//            return currentState.getHeuristic();
+//            return evaluatePath(currentState);
+            if(currentState.getStartPlayer()){
+                return currentState.getPlayerOnePoints();
+            } else{
+                return currentState.getPlayerTwoPoints();
+            }
         }
         int minWert = beta;
 
@@ -153,9 +165,10 @@ public class GameTree {
 
     private int evaluatePath(GameState currentState) {
         if(currentBestHeuristic < currentState.getHeuristic()) {
+            currentBestHeuristic = currentState.getHeuristic();
             currentBestMove = gameMove;
         }
-        return currentBestMove;
+        return currentBestHeuristic;
     }
 
     public int getGameMove() {

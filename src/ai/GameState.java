@@ -7,7 +7,7 @@ public class GameState {
      * Is needed to implement the game tree.
      */
     private BeanCell[] cells = new BeanCell[12];
-    private int heuristic;
+//    private int heuristic;
     private int depthInTree;
 
     private int playerOnePoints;
@@ -26,7 +26,7 @@ public class GameState {
         }
         playerOnePoints = 0;
         playerTwoPoints = 0;
-        this.heuristic = calculateHeuristic();
+//        this.heuristic = calculateHeuristic();
     }
 
     /**
@@ -63,6 +63,8 @@ public class GameState {
         }
     }
 
+
+
     public BeanCell[] getCells() {
         return cells;
     }
@@ -76,7 +78,7 @@ public class GameState {
     }
 
     public void setHeuristic(int heuristic) {
-        this.heuristic = heuristic;
+//        this.heuristic = heuristic;
     }
 
     public int getDepthInTree() {
@@ -100,7 +102,11 @@ public class GameState {
      * @return calculated heuristic for the game state
      */
     private int calculateHeuristic(){
-        return amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells();
+        if(startPlayer){
+            return amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells() + playerOnePoints;
+        } else{
+            return amountPossibleTurns() - amountCellsLeadToEnemyPoints() + valuableCells() + playerTwoPoints;
+        }
     }
 
     /**
@@ -168,8 +174,14 @@ public class GameState {
         return amountCellsLeadToEnemyPoints;
     }
 
-    public int alternateHeuristic(){
+    public int bestMoveRightNow(){
         int value = -1;
+        GameState heuristicState = new GameState(cells);
+        if(startPlayer){
+            for(int i = 0; i < 6; i++) {
+                cells[i].getBeans();
+            }
+        }
 
         return value;
     }
