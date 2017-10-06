@@ -7,7 +7,6 @@ public class BohnenspielAI {
     private static final int INIT_BEANS = 6;
     private static final int NUMBER_OF_CELLS = 12;
     private static final boolean AI_IS_PLAYER_ONE = true;
-
     private boolean startPlayer = false; //true if this AI is the start player of the game
     private BeanCell[] cells = new BeanCell[12];
     private GameState gameState;
