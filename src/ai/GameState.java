@@ -108,7 +108,7 @@ public class GameState {
      */
     private int calculateHeuristic(){
 //        System.out.println("Enemy Point Cells: " + amountCellsLeadToEnemyPoints());
-        return amountCellsLeadToMyPoints() - amountCellsLeadToEnemyPoints();//+ amountPossibleTurns() + valuableCells();
+        return - amountCellsLeadToEnemyPoints();// + amountCellsLeadToMyPoints(); //+ amountPossibleTurns() + valuableCells();
     }
 
     /**
