@@ -48,21 +48,21 @@ public class GameTree {
         int nextIndex = setNextIndex(currentState);
         int lastIndex = setNextIndex(currentState) + 6;
         if(depth == TREE_DEPTH){
-            System.out.println("Debug Print nextIndex: " + nextIndex);
-            System.out.println("Debug Print maxWert: " + maxWert);
+            // System.out.println("Debug Print nextIndex: " + nextIndex);
+            // System.out.println("Debug Print maxWert: " + maxWert);
         }
         while (nextIndex < lastIndex) {
             if(depth == TREE_DEPTH){
-                System.out.println("Debug Loop nextIndex: " + nextIndex);
+                // System.out.println("Debug Loop nextIndex: " + nextIndex);
             }
             if (currentState.getCells()[nextIndex].getBeans() > 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
                 if(depth == TREE_DEPTH && nextIndex == 7){
-                    System.out.println("Breakpoint");
+                    // System.out.println("Breakpoint");
                 }
                 int wert = min(depth - 1, expandedState, maxWert, beta);
                 if(depth == TREE_DEPTH){
-                    System.out.println("Debug Loop if if wert: " + wert);
+                    // System.out.println("Debug Loop if if wert: " + wert);
                 }
                 if (wert > maxWert) {
                     maxWert = wert;
@@ -72,7 +72,7 @@ public class GameTree {
 
                     if (depth == TREE_DEPTH) {
                         gameMove = nextIndex;
-                        System.out.println("Von Index " + nextIndex + " expandiert. => " + gameMove);
+                        // System.out.println("Von Index " + nextIndex + " expandiert. => " + gameMove);
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class GameTree {
                 int wert = max(depth - 1, expandedState, alpha, minWert);
                 if (wert < minWert) {
                     minWert = wert;
-                    if (minWert <= alpha) {
+                    if (minWert < alpha) {
                         break;
                     }
                 }
