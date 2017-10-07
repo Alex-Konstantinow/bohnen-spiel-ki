@@ -11,16 +11,6 @@ public class GameTree {
     private boolean firstPlayer;
 
     /**
-     * Generating a Game Tree to make the decision for the next turn. If the tree depth is odd, than only the expanded
-     * game state with the least heuristic will be added to the expanded list.
-     *
-     * @param currentState
-     */
-    public GameTree(GameState currentState) {
-        max(TREE_DEPTH, currentState, -1000, 1000);
-    }
-
-    /**
      * This constructor kickstarts the min/max or alpha/beta pruning.
      * We only call this method if it's our turn. so we will always start with the max method.
      * If you are not sure how alpha/beta pruning works, this is not the place to learn it.
@@ -30,7 +20,8 @@ public class GameTree {
      */
     public GameTree(GameState currentState, boolean firstPlayer) {
         this.firstPlayer = firstPlayer;
-        max(TREE_DEPTH, currentState, -100000000, 100000000);
+//        this.gameMove = -1;
+        max(TREE_DEPTH, currentState, -10000, 10000);
     }
 
     /**
@@ -49,15 +40,11 @@ public class GameTree {
      */
     private int max(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
-            //TODO: Insert a good heuristic for the currentState here.
             return currentState.getHeuristic();
         }
         int maxWert = alpha;
-
-        //TODO: Maybe we need a better check for the field side.
         int nextIndex = setNextIndex(currentState);
         int lastIndex = setNextIndex(currentState) + 6;
-        //go through all branches here.
         while (nextIndex < lastIndex) {
 //            if(depth == TREE_DEPTH){
 //                System.out.println("Expansion Index: " + nextIndex);
@@ -93,12 +80,10 @@ public class GameTree {
      */
     private int min(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
-            //TODO: Insert a good heuristic for the currentState here.
             return currentState.getHeuristic();
         }
         int minWert = beta;
 
-        //TODO: Maybe we need a better check for the field side.
         int  nextIndex = setNextIndex(currentState);
         int  lastIndex = setNextIndex(currentState) + 6;
         while (nextIndex < lastIndex) {
