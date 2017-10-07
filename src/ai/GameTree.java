@@ -59,7 +59,10 @@ public class GameTree {
         int lastIndex = setNextIndex(currentState) + 6;
         //go through all branches here.
         while (nextIndex < lastIndex) {
-            if (currentState.getCells()[nextIndex].getBeans() != 0) {
+//            if(depth == TREE_DEPTH){
+//                System.out.println("Expansion Index: " + nextIndex);
+//            }
+            if (currentState.getCells()[nextIndex].getBeans() > 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
                 int wert = min(depth - 1, expandedState, maxWert, beta);
                 if (wert > maxWert) {
@@ -99,7 +102,7 @@ public class GameTree {
         int  nextIndex = setNextIndex(currentState);
         int  lastIndex = setNextIndex(currentState) + 6;
         while (nextIndex < lastIndex) {
-            if (currentState.getCells()[nextIndex].getBeans() != 0) {
+            if (currentState.getCells()[nextIndex].getBeans() > 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
                 int wert = max(depth - 1, expandedState, alpha, minWert);
                 if (wert < minWert) {
@@ -153,46 +156,17 @@ public class GameTree {
         return gameMove;
     }
 
-//    public int doRandomMove(GameState gameState){
-//        int index = 0;
-//        if(gameState.isCurrentPlayer()){
-//            do{
-//                index = ((int)Math.random()*6);
-//            }while(gameState.getCells()[index].getBeans() == 0);
-//        } else {
-//            do{
-//                index = 7 + ((int)Math.random()*6);
-//            }while(gameState.getCells()[index].getBeans() == 0);
-//        }
-//        return index;
-//    }
-
-    public int doRandomMove(GameState currentState) {
-        int index = -1;
-        for(int i = 0; i < currentState.getCells().length; i++){
-            if(currentState.getCells()[i].getBeans() != 0){
-                index = i;
-                break;
-            }
+    public int doRandomMove(GameState gameState){
+        int index = 0;
+        if(gameState.isCurrentPlayer()){
+            do{
+                index = ((int)Math.random()*6);
+            }while(gameState.getCells()[index].getBeans() == 0);
+        } else {
+            do{
+                index = 6 + ((int)Math.random()*6);
+            }while(gameState.getCells()[index].getBeans() == 0);
         }
         return index;
     }
-    /*
-I think that my implementation of alpha/beta pruning is somewhat right.
-Maybe there are problems with some parts of it. maybe the heuristic must be improved.
-I've started counting firstPlayer points in each GameState.
-Before doing anything to gameState, please define the current firstPlayer with .setCurrentPlayer.
-
-I made changes in BohnenspielAI, GameTree, GameState, and BeanCell.
-BohnenspielAI:
-I replaced the random turns with new GameTrees and their Index.
-I added 2 final boolean values. The beginning firstPlayer is playerOne, the second firstPlayer is playerTwo.
-Before calling .changeCurrentGamestate(), please set .setCurrentPlayer(boolean) with the above firstPlayer values.
-GameTree:
-Just look at the javadoc, I implemented the alpha/beta pruning.
-GameState:
-I changed distributeBeansOverCurrentGameState to count the firstPlayer points. I need the currentPlayer variable for this.
-BeanCell:
-gave collectBeans a return value of the collected beans to count them in GameState.
-     */
 }
