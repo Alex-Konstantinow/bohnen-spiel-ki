@@ -152,6 +152,20 @@ public class GameTree {
     public int getGameMove() {
         return gameMove;
     }
+
+    public int doRandomMove(GameState gameState){
+        int index = 0;
+        if(gameState.isCurrentPlayer()){
+            do{
+                index = ((int)Math.random()*6);
+            }while(gameState.getCells()[index].getBeans() == 0);
+        } else {
+            do{
+                index = 7 + ((int)Math.random()*6);
+            }while(gameState.getCells()[index].getBeans() == 0);
+        }
+        return index;
+    }
     /*
 I think that my implementation of alpha/beta pruning is somewhat right.
 Maybe there are problems with some parts of it. maybe the heuristic must be improved.

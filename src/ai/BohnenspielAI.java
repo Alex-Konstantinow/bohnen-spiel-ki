@@ -67,6 +67,10 @@ public class BohnenspielAI {
         gameState.setCurrentPlayer(!aiIsPlayerOne);
         GameTree gameTree = new GameTree(gameState, !aiIsPlayerOne);
         index = gameTree.getGameMove() + 1;
+        if(!gameState.isLegalMove(index - 1)) {
+            gameTree.doRandomMove(gameState);
+            index = gameTree.getGameMove() + 1;
+        }
         gameState.changeCurrentGamestate(index);
         return index;
     }
