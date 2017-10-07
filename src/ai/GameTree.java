@@ -153,16 +153,27 @@ public class GameTree {
         return gameMove;
     }
 
-    public int doRandomMove(GameState gameState){
-        int index = 0;
-        if(gameState.isCurrentPlayer()){
-            do{
-                index = ((int)Math.random()*6);
-            }while(gameState.getCells()[index].getBeans() == 0);
-        } else {
-            do{
-                index = 7 + ((int)Math.random()*6);
-            }while(gameState.getCells()[index].getBeans() == 0);
+//    public int doRandomMove(GameState gameState){
+//        int index = 0;
+//        if(gameState.isCurrentPlayer()){
+//            do{
+//                index = ((int)Math.random()*6);
+//            }while(gameState.getCells()[index].getBeans() == 0);
+//        } else {
+//            do{
+//                index = 7 + ((int)Math.random()*6);
+//            }while(gameState.getCells()[index].getBeans() == 0);
+//        }
+//        return index;
+//    }
+
+    public int doRandomMove(GameState currentState) {
+        int index = -1;
+        for(int i = 0; i < currentState.getCells().length; i++){
+            if(currentState.getCells()[i].getBeans() != 0){
+                index = i;
+                break;
+            }
         }
         return index;
     }
