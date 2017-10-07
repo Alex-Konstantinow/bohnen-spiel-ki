@@ -107,7 +107,8 @@ public class GameState {
      */
     private int calculateHeuristic(){
 //        System.out.println("Enemy Point Cells: " + amountCellsLeadToEnemyPoints());
-        return - amountCellsLeadToEnemyPoints();// + amountCellsLeadToMyPoints(); //+ amountPossibleTurns() + valuableCells();
+//        return - amountCellsLeadToPoints();// + amountCellsLeadToMyPoints(); //+ amountPossibleTurns() + valuableCells();
+        return - amountCellsLeadToEnemyPoints();
     }
 
     /**
@@ -152,6 +153,29 @@ public class GameState {
      *
      * @return amount of cells that lead to points for the enemy
      */
+    private int amountCellsLeadToEnemyPoints() {
+        int amountCellsLeadToEnemyPoints = 0;
+        if(startPlayer) {
+            for(int i = 6; i<12; i++) {
+                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
+                    amountCellsLeadToEnemyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
+                }
+            }
+        }
+        else {
+            for(int i = 0; i<6; i++) {
+                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
+                    amountCellsLeadToEnemyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
+                }
+            }
+        }
+        return amountCellsLeadToEnemyPoints;
+    }
+
     private int amountCellsLeadToPoints() {
         int amountCellsLeadToEnemyPoints = 0;
         if(startPlayer) {

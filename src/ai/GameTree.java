@@ -1,5 +1,7 @@
 package ai;
 
+//import sun.reflect.generics.tree.Tree;
+
 import java.util.ArrayList;
 
 public class GameTree {
@@ -45,18 +47,29 @@ public class GameTree {
         int maxWert = alpha;
         int nextIndex = setNextIndex(currentState);
         int lastIndex = setNextIndex(currentState) + 6;
+        if(depth == TREE_DEPTH){
+            System.out.println("Debug Print nextIndex: " + nextIndex);
+            System.out.println("Debug Print maxWert: " + maxWert);
+        }
         while (nextIndex < lastIndex) {
-//            if(depth == TREE_DEPTH){
-//                System.out.println("Expansion Index: " + nextIndex);
-//            }
+            if(depth == TREE_DEPTH){
+                System.out.println("Debug Loop nextIndex: " + nextIndex);
+            }
             if (currentState.getCells()[nextIndex].getBeans() > 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
+                if(depth == TREE_DEPTH && nextIndex == 7){
+                    System.out.println("Breakpoint");
+                }
                 int wert = min(depth - 1, expandedState, maxWert, beta);
+                if(depth == TREE_DEPTH){
+                    System.out.println("Debug Loop if if wert: " + wert);
+                }
                 if (wert > maxWert) {
                     maxWert = wert;
-                    if (maxWert >= beta) {
+                    if (maxWert > beta) {
                         break;
                     }
+
                     if (depth == TREE_DEPTH) {
                         gameMove = nextIndex;
                         System.out.println("Von Index " + nextIndex + " expandiert. => " + gameMove);

@@ -56,6 +56,9 @@ public class BohnenspielAI {
         //TODO: method to decide next AI-turn is called here2, we still have to improve.
         System.out.println("Player 1: " + gameState.getPlayerOnePoints());
         System.out.println("Player 2: " + gameState.getPlayerTwoPoints());
+        if(gameState.getPlayerTwoPoints() == 26){
+            System.out.println("ACHTUNG AB HIER!!!!!!!!");
+        }
         index = choseIndex(aiIsPlayerOne);
         System.out.println("Index: " + index);
         printCells();
