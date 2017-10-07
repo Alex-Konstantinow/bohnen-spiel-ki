@@ -236,10 +236,6 @@ public class GameState {
         return valuableCells;
     }
 
-    public boolean isLegalMove(int index) {
-        return cells[index].getBeans() > 0;
-    }
-
     /**
      * TODO: Valuation of the distribution of the cells. Ideal distribution epending on the strategy (equally or mainly in first two fields)
      *

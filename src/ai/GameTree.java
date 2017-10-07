@@ -133,17 +133,6 @@ public class GameTree {
         return worstTurn;
     }
 
-    public int doRandomMove(GameState currentState) {
-        int index = -1;
-        for(int i = 0; i < currentState.getCells().length; i++){
-            if(currentState.getCells()[i].getBeans() != 0){
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
     public int getGameMove() {
         return gameMove;
     }
