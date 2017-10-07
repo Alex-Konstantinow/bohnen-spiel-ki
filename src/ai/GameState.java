@@ -7,7 +7,7 @@ public class GameState {
      * Is needed to implement the game tree.
      */
     private BeanCell[] cells = new BeanCell[12];
-//    private int heuristic;
+    private int heuristic;
     private int depthInTree;
 
     private int playerOnePoints;
@@ -26,7 +26,7 @@ public class GameState {
         }
         playerOnePoints = 0;
         playerTwoPoints = 0;
-//        this.heuristic = calculateHeuristic();
+        this.heuristic = calculateHeuristic();
     }
 
     /**
@@ -37,8 +37,8 @@ public class GameState {
         int chosenIndex = --cellIndex;
         int numberOfBeans = cells[chosenIndex].getBeans();
         cells[chosenIndex].emptyCell();
-        //cells[chosenIndex].distributeBeans(numberOfBeans);
         this.distributeBeansOverCurrentGameState(chosenIndex, numberOfBeans);
+        this.heuristic = calculateHeuristic();
     }
 
     private void distributeBeansOverCurrentGameState(int index, int beansToDistribute) {
@@ -50,15 +50,14 @@ public class GameState {
                     || cells[(index + beansToDistribute) % 12].getBeans() == 6) {
             while((cells[(index + beansToDistribute) % 12].getBeans() == 2
                     || cells[(index + beansToDistribute) % 12].getBeans() == 4
-                    || cells[(index + beansToDistribute) % 12].getBeans() == 6)
-                        && beansToDistribute > 0) {
+                    || cells[(index + beansToDistribute) % 12].getBeans() == 6) && beansToDistribute > 0) {
                 if(this.currentPlayer){
                     this.playerOnePoints += cells[(index + beansToDistribute) % 12].collectBeans();
                 } else {
                     this.playerTwoPoints += cells[(index + beansToDistribute) % 12].collectBeans();
                 }
-//                cells[(index + beansToDistribute) % 12].collectBeans();
-                beansToDistribute--;
+                cells[(index + beansToDistribute) % 12].collectBeans();
+                --beansToDistribute;
             }
         }
     }
@@ -74,16 +73,11 @@ public class GameState {
     }
 
     public int getHeuristic() {
-        if(startPlayer){
-            return calculateHeuristic() + playerOnePoints - playerTwoPoints;
-        }else{
-            return calculateHeuristic() + playerTwoPoints - playerOnePoints;
-        }
-//        return this.calculateHeuristic();
+        return heuristic;
     }
 
     public void setHeuristic(int heuristic) {
-//        this.heuristic = heuristic;
+        this.heuristic = heuristic;
     }
 
     public int getDepthInTree() {
@@ -107,8 +101,11 @@ public class GameState {
      * @return calculated heuristic for the game state
      */
     private int calculateHeuristic(){
-//        System.out.println("Enemy Point Cells: " + amountCellsLeadToEnemyPoints());
-        return amountCellsLeadToMyPoints() - amountCellsLeadToEnemyPoints();//+ amountPossibleTurns() + valuableCells();
+        if(currentPlayer){
+            return + amountCellsLeadToPoints();
+        } else {
+            return - amountCellsLeadToPoints();
+        }
     }
 
     /**
@@ -153,50 +150,43 @@ public class GameState {
      *
      * @return amount of cells that lead to points for the enemy
      */
-    private int amountCellsLeadToEnemyPoints() {
+    private int amountCellsLeadToPoints() {
         int amountCellsLeadToEnemyPoints = 0;
         if(startPlayer) {
             for(int i = 6; i<12; i++) {
-                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
-                            || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
-                    amountCellsLeadToEnemyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
-                }
+                amountCellsLeadToEnemyPoints += calculatePoints(i);
             }
         }
         else {
             for(int i = 0; i<6; i++) {
-                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
-                    amountCellsLeadToEnemyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
-                }
+                amountCellsLeadToEnemyPoints += calculatePoints(i);
             }
         }
         return amountCellsLeadToEnemyPoints;
     }
 
-    private int amountCellsLeadToMyPoints(){
-        int amountCellsLeadToMyPoints = 0;
-        if(startPlayer) {
-            for(int i = 0; i<6; i++) {
+    private int calculatePoints(int i) {
+        int amountCellsLeadToEnemyPoints = 0;
+        switch ((cells[i].getBeans() / 12) + 1) {
+            case 1:
                 if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
                         || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
                         || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
-                    amountCellsLeadToMyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
-                }
-            }
+                    amountCellsLeadToEnemyPoints += cells[(i+cells[i].getBeans()) % 12].getBeans() + 1;
+                } break;
+            case 2:
+                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 0
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 2
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 4) {
+                    amountCellsLeadToEnemyPoints += cells[(i+cells[i].getBeans()) % 12].getBeans() + 2;
+                } break;
+            case 3:
+                if(cells[(i+cells[i].getBeans()) % 12].getBeans() ==  1
+                        || cells[(i+cells[i].getBeans()) % 12].getBeans() ==  3) {
+                    amountCellsLeadToEnemyPoints += cells[(i+cells[i].getBeans()) % 12].getBeans() + 3;
+                } break;
         }
-        else {
-            for(int i = 6; i<12; i++) {
-                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
-                    amountCellsLeadToMyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
-                }
-            }
-        }
-        return amountCellsLeadToMyPoints;
+        return amountCellsLeadToEnemyPoints;
     }
 
     public int bestMoveRightNow(){
@@ -232,18 +222,22 @@ public class GameState {
         if(startPlayer) {
             for(int i = 0; i<6; i++) {
                 if(cells[i].getBeans() >= 6) {
-                    valuableCells += 1;//cells[i].getBeans();
+                    valuableCells += cells[i].getBeans();
                 }
             }
         }
         else {
             for(int i = 6; i<12; i++) {
                 if(cells[i].getBeans() >= 6) {
-                    valuableCells += 1;//cells[i].getBeans();
+                    valuableCells += cells[i].getBeans();
                 }
             }
         }
         return valuableCells;
+    }
+
+    public boolean isLegalMove(int index) {
+        return cells[index].getBeans() > 0;
     }
 
     /**

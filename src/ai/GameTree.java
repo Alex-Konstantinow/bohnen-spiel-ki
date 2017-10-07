@@ -5,20 +5,10 @@ import java.util.ArrayList;
 public class GameTree {
 
     // Has to be > 4, but must perform < 3s
-    private final static int TREE_DEPTH = 6;
+    private final static int TREE_DEPTH = 10;
 
     private int gameMove;
     private boolean firstPlayer;
-
-    /**
-     * Generating a Game Tree to make the decision for the next turn. If the tree depth is odd, than only the expanded
-     * game state with the least heuristic will be added to the expanded list.
-     *
-     * @param currentState
-     */
-    public GameTree(GameState currentState) {
-        max(TREE_DEPTH, currentState, -1000, 1000);
-    }
 
     /**
      * This constructor kickstarts the min/max or alpha/beta pruning.
@@ -30,7 +20,8 @@ public class GameTree {
      */
     public GameTree(GameState currentState, boolean firstPlayer) {
         this.firstPlayer = firstPlayer;
-        max(TREE_DEPTH, currentState, -100000000, 100000000);
+        this.gameMove = -1;
+        max(TREE_DEPTH, currentState, -10000, 10000);
     }
 
     /**
@@ -49,15 +40,11 @@ public class GameTree {
      */
     private int max(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
-            //TODO: Insert a good heuristic for the currentState here.
             return currentState.getHeuristic();
         }
         int maxWert = alpha;
-
-        //TODO: Maybe we need a better check for the field side.
         int nextIndex = setNextIndex(currentState);
         int lastIndex = setNextIndex(currentState) + 6;
-        //go through all branches here.
         while (nextIndex < lastIndex) {
             if (currentState.getCells()[nextIndex].getBeans() != 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
@@ -69,7 +56,6 @@ public class GameTree {
                     }
                     if (depth == TREE_DEPTH) {
                         gameMove = nextIndex;
-                        System.out.println("Von Index " + nextIndex + " expandiert. => " + gameMove);
                     }
                 }
             }
@@ -90,12 +76,10 @@ public class GameTree {
      */
     private int min(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
-            //TODO: Insert a good heuristic for the currentState here.
             return currentState.getHeuristic();
         }
         int minWert = beta;
 
-        //TODO: Maybe we need a better check for the field side.
         int  nextIndex = setNextIndex(currentState);
         int  lastIndex = setNextIndex(currentState) + 6;
         while (nextIndex < lastIndex) {
@@ -149,25 +133,18 @@ public class GameTree {
         return worstTurn;
     }
 
+    public int doRandomMove(GameState currentState) {
+        int index = -1;
+        for(int i = 0; i < currentState.getCells().length; i++){
+            if(currentState.getCells()[i].getBeans() != 0){
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
     public int getGameMove() {
         return gameMove;
     }
-    /*
-I think that my implementation of alpha/beta pruning is somewhat right.
-Maybe there are problems with some parts of it. maybe the heuristic must be improved.
-I've started counting firstPlayer points in each GameState.
-Before doing anything to gameState, please define the current firstPlayer with .setCurrentPlayer.
-
-I made changes in BohnenspielAI, GameTree, GameState, and BeanCell.
-BohnenspielAI:
-I replaced the random turns with new GameTrees and their Index.
-I added 2 final boolean values. The beginning firstPlayer is playerOne, the second firstPlayer is playerTwo.
-Before calling .changeCurrentGamestate(), please set .setCurrentPlayer(boolean) with the above firstPlayer values.
-GameTree:
-Just look at the javadoc, I implemented the alpha/beta pruning.
-GameState:
-I changed distributeBeansOverCurrentGameState to count the firstPlayer points. I need the currentPlayer variable for this.
-BeanCell:
-gave collectBeans a return value of the collected beans to count them in GameState.
-     */
 }
