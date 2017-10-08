@@ -51,9 +51,6 @@ public class GameTree {
         while (nextIndex < lastIndex) {
             if (currentState.getCells()[nextIndex].getBeans() > 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
-//                if(depth == TREE_DEPTH && nextIndex == 7){
-//                     System.out.println("Breakpoint");
-//                }
                 int wert = min(depth - 1, expandedState, maxWert, beta);
                 if (wert > maxWert) {
                     maxWert = wert;
