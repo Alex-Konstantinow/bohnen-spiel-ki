@@ -12,7 +12,7 @@ import java.net.URI;
  */
 public class GameClient {
 
-    private static String ai_name = "AiiLmao";
+    private static String ai_name = "Trés Bohn";
     private String gameID;
     private BohnenspielAI ai;
 
