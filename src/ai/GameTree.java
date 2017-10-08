@@ -41,10 +41,7 @@ public class GameTree {
      * @return The maximum heuristic value that this node found.
      */
     private int max(int depth, GameState currentState, int alpha, int beta) {
-        if(currentState.amountPossibleTurns() == 0){
-            return -100000;
-        }
-        if (depth == 0){// || currentState.amountPossibleTurns() == 0) {
+        if (depth == 0  || currentState.amountPossibleTurns() == 0) {
             return currentState.getHeuristic();
         }
 
@@ -58,12 +55,11 @@ public class GameTree {
                 int wert = min(depth - 1, expandedState, maxWert, beta);
                 if (wert > maxWert) {
                     maxWert = wert;
-                    if (maxWert > beta) {
-                        break;
-                    }
                     if (depth == TREE_DEPTH) {
                         gameMove = nextIndex;
-                        // System.out.println("Von Index " + nextIndex + " expandiert. => " + gameMove);
+                    }
+                    if (maxWert > beta) {
+                        break;
                     }
                 }
             } else {
@@ -88,10 +84,7 @@ public class GameTree {
      * @return The minimum heuristic value that this node found.
      */
     private int min(int depth, GameState currentState, int alpha, int beta) {
-        if(currentState.amountPossibleTurns() == 0){
-            return -100000;
-        }
-        if (depth == 0){// || currentState.amountPossibleTurns() == 0) {
+        if (depth == 0  || currentState.amountPossibleTurns() == 0) {
             return currentState.getHeuristic();
         }
 
@@ -136,7 +129,7 @@ public class GameTree {
     }
 
     private GameState expandGameState(GameState currentState, int nextIndex){
-        GameState expandedState = new GameState(currentState.getCells());
+        GameState expandedState = new GameState(currentState.getCells(), currentState.getPlayerOnePoints(), currentState.getPlayerTwoPoints());
         expandedState.setCurrentPlayer(!currentState.isCurrentPlayer());
         expandedState.changeCurrentGamestate(nextIndex + 1);
         return expandedState;

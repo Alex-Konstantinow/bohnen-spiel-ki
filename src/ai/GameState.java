@@ -15,7 +15,7 @@ public class GameState {
     private boolean currentPlayer = false;
     private boolean startPlayer = false; //true if this AI is the start player of the game
 
-    public GameState(BeanCell[] gamestate){
+    public GameState(BeanCell[] gamestate, int playerOnePoints, int playerTwoPoints){
         for(int i = 0; i < gamestate.length; i++){
             cells[i] = new BeanCell(gamestate[i].getIndex(), gamestate[i].getBeans());
         }
@@ -24,8 +24,8 @@ public class GameState {
             cells[i].setNextCell(cells[(i+1) % 12]);
             cells[i].setPreviousCell(cells[(i+11) % 12]);
         }
-        playerOnePoints = 0;
-        playerTwoPoints = 0;
+        this.playerOnePoints = playerOnePoints;
+        this.playerTwoPoints = playerTwoPoints;
         this.heuristic = calculateHeuristic();
     }
 
@@ -101,13 +101,21 @@ public class GameState {
         this.startPlayer = startPlayer;
     }
 
+    public void setPlayerOnePoints(int playerOnePoints) {
+        this.playerOnePoints = playerOnePoints;
+    }
+
+    public void setPlayerTwoPoints(int playerTwoPoints) {
+        this.playerTwoPoints = playerTwoPoints;
+    }
+
     /**
      * TODO: Implement the heuristic calculation.
      * @return calculated heuristic for the game state
      */
     private int calculateHeuristic(){
 //        System.out.println("Enemy Point Cells: " + amountCellsLeadToEnemyPoints());
-        return starveOutEnemy() - amountCellsLeadToPoints();// + amountCellsLeadToMyPoints(); //+ amountPossibleTurns() + valuableCells();
+        return starveOutEnemy() + amountCellsLeadToPoints();// + amountCellsLeadToMyPoints(); //+ amountPossibleTurns() + valuableCells();
 //        return - amountCellsLeadToEnemyPoints();
     }
 
@@ -154,42 +162,26 @@ public class GameState {
      *
      * @return amount of cells that lead to points for the enemy
      */
-    private int amountCellsLeadToEnemyPoints() {
-        int amountCellsLeadToEnemyPoints = 0;
-        if(startPlayer) {
-            for(int i = 6; i<12; i++) {
-                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
-                    amountCellsLeadToEnemyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
-                }
-            }
-        }
-        else {
-            for(int i = 0; i<6; i++) {
-                if(cells[(i+cells[i].getBeans()) % 12].getBeans() == 1
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 3
-                        || cells[(i+cells[i].getBeans()) % 12].getBeans() == 5) {
-                    amountCellsLeadToEnemyPoints += 1;//(cells[(i+cells[i].getBeans()) % 12].getBeans() + 1);
-                }
-            }
-        }
-        return amountCellsLeadToEnemyPoints;
-    }
 
     private int amountCellsLeadToPoints() {
-        int amountCellsLeadToEnemyPoints = 0;
+        int amountCellsLeadToPoints = 0;
         if(startPlayer) {
-            for(int i = 6; i<12; i++) {
-                amountCellsLeadToEnemyPoints += calculatePoints(i);
+            for(int i = 0; i < 6; i++) {
+                amountCellsLeadToPoints += calculatePoints(i);
+            }
+            for(int i = 6; i < 12; i++) {
+                amountCellsLeadToPoints -= calculatePoints(i);
             }
         }
         else {
-            for(int i = 0; i<6; i++) {
-                amountCellsLeadToEnemyPoints += calculatePoints(i);
+            for(int i = 0; i < 6; i++) {
+                amountCellsLeadToPoints -= calculatePoints(i);
+            }
+            for(int i = 6; i < 12; i++) {
+                amountCellsLeadToPoints += calculatePoints(i);
             }
         }
-        return amountCellsLeadToEnemyPoints;
+        return amountCellsLeadToPoints;
     }
 
     private int calculatePoints(int i) {
@@ -232,18 +224,6 @@ public class GameState {
             }
         }
         return 1000000000;
-    }
-
-    public int bestMoveRightNow(){
-        int value = -1;
-        GameState heuristicState = new GameState(cells);
-        if(startPlayer){
-            for(int i = 0; i < 6; i++) {
-                cells[i].getBeans();
-            }
-        }
-
-        return value;
     }
 
     /**

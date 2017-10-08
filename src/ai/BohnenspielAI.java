@@ -22,7 +22,7 @@ public class BohnenspielAI {
             cells[i].setNextCell(cells[(i + 1) % 12]);
             cells[i].setPreviousCell(cells[(i + 11) % 12]);
         }
-        gameState = new GameState(cells);
+        gameState = new GameState(cells, 0, 0);
 
     }
 
