@@ -7,8 +7,6 @@ public class GameState {
      * Is needed to implement the game tree.
      */
     private BeanCell[] cells = new BeanCell[12];
-    private int heuristic;
-    private int depthInTree;
 
     private int playerOnePoints;
     private int playerTwoPoints;
@@ -19,14 +17,8 @@ public class GameState {
         for (int i = 0; i < gamestate.length; i++) {
             cells[i] = new BeanCell(gamestate[i].getIndex(), gamestate[i].getBeans());
         }
-
-        for (int i = 0; i < gamestate.length; i++) {
-            cells[i].setNextCell(cells[(i + 1) % 12]);
-            cells[i].setPreviousCell(cells[(i + 11) % 12]);
-        }
         this.playerOnePoints = playerOnePoints;
         this.playerTwoPoints = playerTwoPoints;
-        this.heuristic = calculateHeuristic();
     }
 
     /**
@@ -39,9 +31,14 @@ public class GameState {
         int numberOfBeans = cells[chosenIndex].getBeans();
         cells[chosenIndex].emptyCell();
         this.distributeBeansOverCurrentGameState(chosenIndex, numberOfBeans);
-        this.heuristic = calculateHeuristic();
     }
 
+    /**
+     * Destributes all beans of the selected cell and collects all beans, which are collectable by the player.
+     *
+     * @param index index of the cell for the current turn
+     * @param beansToDistribute number of beans inside the selected bean cell
+     */
     private void distributeBeansOverCurrentGameState(int index, int beansToDistribute) {
         for (int i = 1; i <= beansToDistribute; i++) {
             cells[(index + i) % 12].increaseBeans();
@@ -62,50 +59,25 @@ public class GameState {
         }
     }
 
-
     public BeanCell[] getCells() {
         return cells;
     }
 
-    public void setCells(BeanCell[] cells) {
-        this.cells = cells;
-    }
-
+    /**
+     * Calculates the heuristic by comparing ai points and enemy points.
+     *
+     * @return gamestate-heuristic
+     */
     public int getHeuristic() {
         if (startPlayer) {
             return calculateHeuristic() + playerOnePoints - playerTwoPoints;
         } else {
             return calculateHeuristic() + playerTwoPoints - playerOnePoints;
         }
-//        return this.calculateHeuristic();
-    }
-
-    public void setHeuristic(int heuristic) {
-        this.heuristic = heuristic;
-    }
-
-    public int getDepthInTree() {
-        return depthInTree;
-    }
-
-    public void setDepthInTree(int depthInTree) {
-        this.depthInTree = depthInTree;
-    }
-
-    public boolean getStartPlayer() {
-        return startPlayer;
     }
 
     public void setStartPlayer(boolean startPlayer) {
         this.startPlayer = startPlayer;
-    }
-
-    public void setPlayerOnePoints(int playerOnePoints) {
-        this.playerOnePoints = playerOnePoints;
-    }
-
-    public void setPlayerTwoPoints(int playerTwoPoints) {
-        this.playerTwoPoints = playerTwoPoints;
     }
 
     /**
@@ -113,7 +85,6 @@ public class GameState {
      */
     private int calculateHeuristic() {
         return 0;
-        //return starveOutEnemy() + amountCellsLeadToPoints();
     }
 
     /**
@@ -137,121 +108,6 @@ public class GameState {
             }
         }
         return possibleTurns;
-    }
-
-    /**
-     * Counting all own cells with an amount of 1, 3 or 5 beans if they can be reached by the enemy in a turn.
-     * A cell with 5 is worse than one with 3 which is worse than one with 1 bean.
-     * The less the better.
-     *
-     * @return amount of cells that lead to points for the enemy
-     */
-
-    private int amountCellsLeadToPoints() {
-        int amountCellsLeadToPoints = 0;
-        if (startPlayer) {
-            for (int i = 0; i < 6; i++) {
-                amountCellsLeadToPoints += calculatePoints(i);
-            }
-            for (int i = 6; i < 12; i++) {
-                amountCellsLeadToPoints -= calculatePoints(i);
-            }
-        } else {
-            for (int i = 0; i < 6; i++) {
-                amountCellsLeadToPoints -= calculatePoints(i);
-            }
-            for (int i = 6; i < 12; i++) {
-                amountCellsLeadToPoints += calculatePoints(i);
-            }
-        }
-        return amountCellsLeadToPoints;
-    }
-
-    private int calculatePoints(int i) {
-        int amountCellsLeadToEnemyPoints = 0;
-        switch ((cells[i].getBeans() / 12) + 1) {
-            case 1:
-                if (cells[(i + cells[i].getBeans()) % 12].getBeans() == 1
-                        || cells[(i + cells[i].getBeans()) % 12].getBeans() == 3
-                        || cells[(i + cells[i].getBeans()) % 12].getBeans() == 5) {
-                    amountCellsLeadToEnemyPoints += cells[(i + cells[i].getBeans()) % 12].getBeans() + 1;
-                }
-                break;
-            case 2:
-                if (cells[(i + cells[i].getBeans()) % 12].getBeans() == 0
-                        || cells[(i + cells[i].getBeans()) % 12].getBeans() == 2
-                        || cells[(i + cells[i].getBeans()) % 12].getBeans() == 4) {
-                    amountCellsLeadToEnemyPoints += cells[(i + cells[i].getBeans()) % 12].getBeans() + 2;
-                }
-                break;
-            case 3:
-                if (cells[(i + cells[i].getBeans()) % 12].getBeans() == 1
-                        || cells[(i + cells[i].getBeans()) % 12].getBeans() == 3) {
-                    amountCellsLeadToEnemyPoints += cells[(i + cells[i].getBeans()) % 12].getBeans() + 3;
-                }
-                break;
-        }
-        return amountCellsLeadToEnemyPoints;
-    }
-
-    private int starveOutEnemy() {
-        if (startPlayer) {
-            for (int i = 6; i < 12; i++) {
-                if (cells[i].getBeans() != 0) {
-                    return 0;
-                }
-            }
-        } else {
-            for (int i = 0; i < 6; i++) {
-                if (cells[i].getBeans() != 0) {
-                    return 0;
-                }
-            }
-        }
-        return 1000000000;
-    }
-
-    /**
-     * TODO: Counting all beans that are transferred into an enemy cell in a turn. The less the better.
-     *
-     * @return the amount of beans which are transferred into an enemy cell in a turn
-     */
-    private int amountBeansInEnemyField() {
-        int amountBeansInEnemyField = 0;
-        return amountBeansInEnemyField;
-    }
-
-    /**
-     * Counts the amount of cells with 6 or more beans. The more beans the better.
-     * TODO: Implementation of counting the cells with a high amount of beans if they can lead to a chain of "point-giving" cells
-     *
-     * @return the total amount of beans in cells with 6 or more beans
-     */
-    private int valuableCells() {
-        int valuableCells = 0;
-        if (startPlayer) {
-            for (int i = 0; i < 6; i++) {
-                if (cells[i].getBeans() >= 6) {
-                    valuableCells += 1;
-                }
-            }
-        } else {
-            for (int i = 6; i < 12; i++) {
-                if (cells[i].getBeans() >= 6) {
-                    valuableCells += 1;
-                }
-            }
-        }
-        return valuableCells;
-    }
-
-    /**
-     * TODO: Valuation of the distribution of the cells. Ideal distribution epending on the strategy (equally or mainly in first two fields)
-     *
-     * @return
-     */
-    private int distributionOfBeans() {
-        return 0;
     }
 
     public int getPlayerOnePoints() {

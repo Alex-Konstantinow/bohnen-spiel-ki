@@ -1,6 +1,5 @@
 package ai;
 
-//import sun.reflect.generics.tree.Tree;
 
 public class GameTree {
 
@@ -8,34 +7,29 @@ public class GameTree {
     private final static int TREE_DEPTH = 14;
 
     private int gameMove;
-    private boolean firstPlayer;
 
     /**
      * This constructor kickstarts the min/max or alpha/beta pruning.
      * We only call this method if it's our turn. so we will always start with the max method.
-     * If you are not sure how alpha/beta pruning works, this is not the place to learn it.
      *
-     * @param currentState The current GameState for the current firstPlayer.
-     * @param firstPlayer  Tells me which firstPlayer I am.
+     * @param currentState The current GameState for the current firstPlayer
+     * @param firstPlayer  Tells me which firstPlayer I am
      */
     public GameTree(GameState currentState, boolean firstPlayer) {
-        this.firstPlayer = firstPlayer;
         max(TREE_DEPTH, currentState, -10000, 10000);
     }
 
     /**
      * This method goes through each branch of a gameState recursively,
      * and gives back the highest heuristic value that his branches had.
-     * It calls the min function, which calls the max function, and so on...
      * It stops if we get to our desired depth or if we have no possible turns.
      * The best turn for this branch will be saved in the attribute gameMove.
-     * It's pretty much the standard alpha/beta pruning code on wikipedia.
      *
-     * @param depth        The current depth, counting down.
-     * @param currentState The board state of this node.
-     * @param alpha        The current maximum heuristic value that the process found.
-     * @param beta         The current minimum heuristic value that the process found.
-     * @return The maximum heuristic value that this node found.
+     * @param depth        The current depth, counting down
+     * @param currentState The board state of this node
+     * @param alpha        The current maximum heuristic value that the process found
+     * @param beta         The current minimum heuristic value that the process found
+     * @return The maximum heuristic value that this node found
      */
     private int max(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
@@ -68,11 +62,11 @@ public class GameTree {
      * Just like max a part of min/max or alpha/beta pruning.
      * Goes through all branches of his node and returns the lowest heursitic value that it found.
      *
-     * @param depth        The current depth, counting down.
-     * @param currentState The board state of this node.
-     * @param alpha        The current maximum heuristic value that the process found.
-     * @param beta         The current minimum heuristic value that the process found.
-     * @return The minimum heuristic value that this node found.
+     * @param depth        The current depth, counting down
+     * @param currentState The board state of this node
+     * @param alpha        The current maximum heuristic value that the process found
+     * @param beta         The current minimum heuristic value that the process found
+     * @return The minimum heuristic value that this node found
      */
     private int min(int depth, GameState currentState, int alpha, int beta) {
         if (depth == 0 || currentState.amountPossibleTurns() == 0) {
@@ -100,8 +94,10 @@ public class GameTree {
     }
 
     /**
+     * Decides the startIndex for the Player.
+     *
      * @param currentState current gameState
-     * @return Returns the first index of the current players field.
+     * @return Returns the first index of the current players field
      */
     private int setNextIndex(GameState currentState) {
         int j;
@@ -113,6 +109,13 @@ public class GameTree {
         return j;
     }
 
+    /**
+     * Expanding the current game state from a specific index.
+     *
+     * @param currentState current game state
+     * @param nextIndex    next index of bean cell to do my turn
+     * @return
+     */
     private GameState expandGameState(GameState currentState, int nextIndex) {
         GameState expandedState = new GameState(currentState.getCells(), currentState.getPlayerOnePoints(), currentState.getPlayerTwoPoints());
         expandedState.setCurrentPlayer(!currentState.isCurrentPlayer());
@@ -120,22 +123,7 @@ public class GameTree {
         return expandedState;
     }
 
-    private GameState getWorstPossibleTurn(GameState currentState, int firstIndex, int lastIndex) {
-        GameState worstTurn = null;
-        for (int i = firstIndex; i < lastIndex; i++) {
-            if (worstTurn == null) {
-                worstTurn = expandGameState(currentState, i);
-            } else {
-                if (worstTurn.getHeuristic() > expandGameState(currentState, i).getHeuristic()) {
-                    worstTurn = expandGameState(currentState, i);
-                }
-            }
-        }
-        return worstTurn;
-    }
-
     public int getGameMove(GameState currentState) {
-        System.out.println("Bohnen in dieser Zelle: " + currentState.getCells()[gameMove].getBeans());
         return gameMove;
     }
 }

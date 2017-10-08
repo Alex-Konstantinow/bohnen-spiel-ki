@@ -5,7 +5,7 @@ public class BohnenspielAI {
     private static final int INIT_BEANS = 6;
     private static final int NUMBER_OF_CELLS = 12;
     private static final boolean AI_IS_PLAYER_ONE = true;
-    private boolean startPlayer = false; //true if this AI is the start player of the game
+    private boolean startPlayer = false;
     private BeanCell[] cells = new BeanCell[12];
     private GameState gameState;
 
@@ -13,16 +13,12 @@ public class BohnenspielAI {
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
             cells[i] = new BeanCell(i + 1, INIT_BEANS);
         }
-
-        for (int i = 0; i < NUMBER_OF_CELLS; i++) {
-            cells[i].setNextCell(cells[(i + 1) % 12]);
-            cells[i].setPreviousCell(cells[(i + 11) % 12]);
-        }
         gameState = new GameState(cells, 0, 0);
-
     }
 
     /**
+     * Getting the indext of the next turn.
+     *
      * @param enemyIndex The index that refers to the field chosen by the enemy in the last action.
      *                   If this value is -1, than the AI is the starting player and has to specify the first move.
      * @return Return The index that refers to the field of the action chosen by this AI.
@@ -45,18 +41,28 @@ public class BohnenspielAI {
         return index;
     }
 
+    /**
+     * Changing the game state after the enemy turn and gets the index for the ai´s next turn.
+     *
+     * @param enemyIndex
+     * @param aiIsPlayerOne
+     * @return
+     */
     private int doMove(int enemyIndex, boolean aiIsPlayerOne) {
         int index;
         gameState.setCurrentPlayer(aiIsPlayerOne);
         gameState.changeCurrentGamestate(enemyIndex);
-        System.out.println("Player 1: " + gameState.getPlayerOnePoints());
-        System.out.println("Player 2: " + gameState.getPlayerTwoPoints());
         index = choseIndex(aiIsPlayerOne);
-        System.out.println("Index: " + index);
         printCells();
         return index;
     }
 
+    /**
+     * Building the Game tree to get the best possible turn based on the heuristic.
+     *
+     * @param aiIsPlayerOne
+     * @return the indext for ai`s next turn
+     */
     private int choseIndex(boolean aiIsPlayerOne) {
         int index;
         gameState.setCurrentPlayer(!aiIsPlayerOne);
@@ -74,11 +80,5 @@ public class BohnenspielAI {
                 System.out.print(gameState.getCells()[i].getBeans() + ", ");
             }
         }
-        System.out.println("Heuristik: " + gameState.getHeuristic());
     }
-
-    private void generateTree() {
-        new GameTree(gameState, false);
-    }
-
 }
