@@ -5,7 +5,7 @@ package ai;
 public class GameTree {
 
     // Has to be > 4, but must perform < 3s
-    private final static int TREE_DEPTH = 8;
+    private final static int TREE_DEPTH = 14;
 
     private int gameMove;
     private boolean firstPlayer;
@@ -54,7 +54,7 @@ public class GameTree {
                     if (depth == TREE_DEPTH) {
                         gameMove = nextIndex;
                     }
-                    if (maxWert > beta) {
+                    if (maxWert >= beta) {
                         break;
                     }
                 }
@@ -89,7 +89,7 @@ public class GameTree {
                 int wert = max(depth - 1, expandedState, alpha, minWert);
                 if (wert < minWert) {
                     minWert = wert;
-                    if (minWert < alpha) {
+                    if (minWert <= alpha) {
                         break;
                     }
                 }
