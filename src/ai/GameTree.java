@@ -2,8 +2,6 @@ package ai;
 
 //import sun.reflect.generics.tree.Tree;
 
-import java.util.ArrayList;
-
 public class GameTree {
 
     // Has to be > 4, but must perform < 3s
@@ -22,7 +20,6 @@ public class GameTree {
      */
     public GameTree(GameState currentState, boolean firstPlayer) {
         this.firstPlayer = firstPlayer;
-//        this.gameMove = -1;
         max(TREE_DEPTH, currentState, -10000, 10000);
     }
 
@@ -41,14 +38,13 @@ public class GameTree {
      * @return The maximum heuristic value that this node found.
      */
     private int max(int depth, GameState currentState, int alpha, int beta) {
-        if (depth == 0  || currentState.amountPossibleTurns() == 0) {
+        if (depth == 0 || currentState.amountPossibleTurns() == 0) {
             return currentState.getHeuristic();
         }
 
         int maxWert = alpha;
         int nextIndex = setNextIndex(currentState);
         int lastIndex = setNextIndex(currentState) + 6;
-        int emptyCellCounter = 0;
         while (nextIndex < lastIndex) {
             if (currentState.getCells()[nextIndex].getBeans() > 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
@@ -62,14 +58,9 @@ public class GameTree {
                         break;
                     }
                 }
-            } else {
-                emptyCellCounter++;
             }
             nextIndex++;
         }
-//        if(emptyCellCounter == 6){
-//            maxWert = -10000;
-//        }
         return maxWert;
     }
 
@@ -84,15 +75,14 @@ public class GameTree {
      * @return The minimum heuristic value that this node found.
      */
     private int min(int depth, GameState currentState, int alpha, int beta) {
-        if (depth == 0  || currentState.amountPossibleTurns() == 0) {
+        if (depth == 0 || currentState.amountPossibleTurns() == 0) {
             return currentState.getHeuristic();
         }
 
         int minWert = beta;
 
-        int  nextIndex = setNextIndex(currentState);
-        int  lastIndex = setNextIndex(currentState) + 6;
-        int emptyCellCounter = 0;
+        int nextIndex = setNextIndex(currentState);
+        int lastIndex = setNextIndex(currentState) + 6;
         while (nextIndex < lastIndex) {
             if (currentState.getCells()[nextIndex].getBeans() > 0) {
                 GameState expandedState = expandGameState(currentState, nextIndex);
@@ -103,14 +93,9 @@ public class GameTree {
                         break;
                     }
                 }
-            } else {
-                emptyCellCounter++;
             }
             nextIndex++;
         }
-//        if(emptyCellCounter == 6){
-//            minWert = -10000;
-//        }
         return minWert;
     }
 
@@ -128,20 +113,20 @@ public class GameTree {
         return j;
     }
 
-    private GameState expandGameState(GameState currentState, int nextIndex){
+    private GameState expandGameState(GameState currentState, int nextIndex) {
         GameState expandedState = new GameState(currentState.getCells(), currentState.getPlayerOnePoints(), currentState.getPlayerTwoPoints());
         expandedState.setCurrentPlayer(!currentState.isCurrentPlayer());
         expandedState.changeCurrentGamestate(nextIndex + 1);
         return expandedState;
     }
 
-    private GameState getWorstPossibleTurn(GameState currentState, int firstIndex, int lastIndex){
+    private GameState getWorstPossibleTurn(GameState currentState, int firstIndex, int lastIndex) {
         GameState worstTurn = null;
-        for(int i = firstIndex; i < lastIndex; i++) {
-            if(worstTurn == null) {
+        for (int i = firstIndex; i < lastIndex; i++) {
+            if (worstTurn == null) {
                 worstTurn = expandGameState(currentState, i);
             } else {
-                if(worstTurn.getHeuristic() > expandGameState(currentState, i).getHeuristic()){
+                if (worstTurn.getHeuristic() > expandGameState(currentState, i).getHeuristic()) {
                     worstTurn = expandGameState(currentState, i);
                 }
             }
@@ -152,19 +137,5 @@ public class GameTree {
     public int getGameMove(GameState currentState) {
         System.out.println("Bohnen in dieser Zelle: " + currentState.getCells()[gameMove].getBeans());
         return gameMove;
-    }
-
-    public int doRandomMove(GameState gameState){
-        int index = 0;
-        if(gameState.isCurrentPlayer()){
-            do{
-                index = ((int)Math.random()*6);
-            }while(gameState.getCells()[index].getBeans() == 0);
-        } else {
-            do{
-                index = 6 + ((int)Math.random()*6);
-            }while(gameState.getCells()[index].getBeans() == 0);
-        }
-        return index;
     }
 }

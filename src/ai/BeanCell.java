@@ -11,18 +11,19 @@ public class BeanCell {
     private BeanCell nextCell;
     private BeanCell previousCell;
 
-    public BeanCell(int index, int beans){
+    public BeanCell(int index, int beans) {
         this.index = index;
         this.beans = beans;
     }
 
     /**
      * Distributes all beans inside the selected cell to the following cells.
+     *
      * @param beansLeft number of beans to distribute
      */
     public void distributeBeans(int beansLeft) {
         int beansToDistribute = --beansLeft;
-        if(beansToDistribute > 1) {
+        if (beansToDistribute > 1) {
             nextCell.increaseBeans();
             nextCell.distributeBeans(beansToDistribute);
         } else {
@@ -32,7 +33,7 @@ public class BeanCell {
         }
     }
 
-    public void increaseBeans(){
+    public void increaseBeans() {
         this.beans++;
     }
 
@@ -43,17 +44,16 @@ public class BeanCell {
      */
     public int collectBeans() {
         int currentBeans = this.getBeans();
-        if(currentBeans == 6 || currentBeans == 4 || currentBeans == 2) {
+        if (currentBeans == 6 || currentBeans == 4 || currentBeans == 2) {
             int buffer = this.beans;
             this.emptyCell();
             return buffer;
-            //previousCell.collectBeans();
         } else {
             return 0;
         }
     }
 
-    public void emptyCell(){
+    public void emptyCell() {
         this.beans = 0;
     }
 

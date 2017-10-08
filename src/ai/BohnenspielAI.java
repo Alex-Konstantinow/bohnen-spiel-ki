@@ -1,7 +1,5 @@
 package ai;
 
-import java.util.Random;
-
 public class BohnenspielAI {
 
     private static final int INIT_BEANS = 6;
@@ -10,8 +8,6 @@ public class BohnenspielAI {
     private boolean startPlayer = false; //true if this AI is the start player of the game
     private BeanCell[] cells = new BeanCell[12];
     private GameState gameState;
-
-    Random rand = new Random();
 
     public BohnenspielAI() {
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
@@ -53,12 +49,8 @@ public class BohnenspielAI {
         int index;
         gameState.setCurrentPlayer(aiIsPlayerOne);
         gameState.changeCurrentGamestate(enemyIndex);
-        //TODO: method to decide next AI-turn is called here2, we still have to improve.
         System.out.println("Player 1: " + gameState.getPlayerOnePoints());
         System.out.println("Player 2: " + gameState.getPlayerTwoPoints());
-        if(gameState.getPlayerTwoPoints() == 26){
-            System.out.println("ACHTUNG AB HIER!!!!!!!!");
-        }
         index = choseIndex(aiIsPlayerOne);
         System.out.println("Index: " + index);
         printCells();
@@ -74,7 +66,7 @@ public class BohnenspielAI {
         return index;
     }
 
-    private void printCells(){
+    private void printCells() {
         for (int i = 0; i < 12; i++) {
             if (i == 11) {
                 System.out.println(gameState.getCells()[i].getBeans());
@@ -85,16 +77,8 @@ public class BohnenspielAI {
         System.out.println("Heuristik: " + gameState.getHeuristic());
     }
 
-    // TODO: This Method should be used to generate the index for my next turn
     private void generateTree() {
         new GameTree(gameState, false);
     }
 
-    /**
-     * TODO: AI Logic will be implemented here
-     */
-    private int magicMethodThatWinsTheGame() {
-
-        return -1;
-    }
 }
