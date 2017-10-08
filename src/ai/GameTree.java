@@ -41,9 +41,13 @@ public class GameTree {
      * @return The maximum heuristic value that this node found.
      */
     private int max(int depth, GameState currentState, int alpha, int beta) {
-        if (depth == 0 || currentState.amountPossibleTurns() == 0) {
+        if(currentState.amountPossibleTurns() == 0){
+            return -100000;
+        }
+        if (depth == 0){// || currentState.amountPossibleTurns() == 0) {
             return currentState.getHeuristic();
         }
+
         int maxWert = alpha;
         int nextIndex = setNextIndex(currentState);
         int lastIndex = setNextIndex(currentState) + 6;
@@ -54,7 +58,7 @@ public class GameTree {
                 int wert = min(depth - 1, expandedState, maxWert, beta);
                 if (wert > maxWert) {
                     maxWert = wert;
-                    if (maxWert >= beta) {
+                    if (maxWert > beta) {
                         break;
                     }
                     if (depth == TREE_DEPTH) {
@@ -67,9 +71,9 @@ public class GameTree {
             }
             nextIndex++;
         }
-        if(emptyCellCounter == 6){
-            maxWert = -10000;
-        }
+//        if(emptyCellCounter == 6){
+//            maxWert = -10000;
+//        }
         return maxWert;
     }
 
@@ -84,9 +88,13 @@ public class GameTree {
      * @return The minimum heuristic value that this node found.
      */
     private int min(int depth, GameState currentState, int alpha, int beta) {
-        if (depth == 0 || currentState.amountPossibleTurns() == 0) {
+        if(currentState.amountPossibleTurns() == 0){
+            return -100000;
+        }
+        if (depth == 0){// || currentState.amountPossibleTurns() == 0) {
             return currentState.getHeuristic();
         }
+
         int minWert = beta;
 
         int  nextIndex = setNextIndex(currentState);
@@ -98,7 +106,7 @@ public class GameTree {
                 int wert = max(depth - 1, expandedState, alpha, minWert);
                 if (wert < minWert) {
                     minWert = wert;
-                    if (minWert <= alpha) {
+                    if (minWert < alpha) {
                         break;
                     }
                 }
@@ -107,9 +115,9 @@ public class GameTree {
             }
             nextIndex++;
         }
-        if(emptyCellCounter == 6){
-            minWert = -10000;
-        }
+//        if(emptyCellCounter == 6){
+//            minWert = -10000;
+//        }
         return minWert;
     }
 
@@ -148,7 +156,8 @@ public class GameTree {
         return worstTurn;
     }
 
-    public int getGameMove() {
+    public int getGameMove(GameState currentState) {
+        System.out.println("Bohnen in dieser Zelle: " + currentState.getCells()[gameMove].getBeans());
         return gameMove;
     }
 

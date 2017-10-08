@@ -69,7 +69,7 @@ public class BohnenspielAI {
         int index;
         gameState.setCurrentPlayer(!aiIsPlayerOne);
         GameTree gameTree = new GameTree(gameState, !aiIsPlayerOne);
-        index = gameTree.getGameMove() + 1;
+        index = gameTree.getGameMove(gameState) + 1;
         gameState.changeCurrentGamestate(index);
         return index;
     }

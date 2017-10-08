@@ -107,7 +107,7 @@ public class GameState {
      */
     private int calculateHeuristic(){
 //        System.out.println("Enemy Point Cells: " + amountCellsLeadToEnemyPoints());
-        return - amountCellsLeadToPoints();// + amountCellsLeadToMyPoints(); //+ amountPossibleTurns() + valuableCells();
+        return starveOutEnemy() - amountCellsLeadToPoints();// + amountCellsLeadToMyPoints(); //+ amountPossibleTurns() + valuableCells();
 //        return - amountCellsLeadToEnemyPoints();
     }
 
@@ -143,6 +143,7 @@ public class GameState {
                 }
             }
         }
+//        System.out.println("Possible turns: " + possibleTurns);
         return possibleTurns;
     }
 
@@ -213,6 +214,24 @@ public class GameState {
                 } break;
         }
         return amountCellsLeadToEnemyPoints;
+    }
+
+    private int starveOutEnemy() {
+        if (startPlayer) {
+            for (int i = 6; i<12; i++) {
+                if(cells[i].getBeans() != 0) {
+                    return 0;
+                }
+            }
+        }
+        else {
+            for (int i = 0; i<6; i++) {
+                if(cells[i].getBeans() != 0) {
+                    return 0;
+                }
+            }
+        }
+        return 1000000000;
     }
 
     public int bestMoveRightNow(){
